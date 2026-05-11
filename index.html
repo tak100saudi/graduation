@@ -1,15 +1,6 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
-<<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-8Q6WPFL10K"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-8Q6WPFL10K');
-</script>
->
+<head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>TakTab — استبيان العملاء</title>
@@ -419,9 +410,23 @@ function back() {
   }
 }
 
+// ← ضع رابط Web App هنا بعد الـ Deploy
+const APPS_URL = 'https://script.google.com/macros/s/AKfycbw8-u4OfS387AaYw1lEMYmL_UG3b8cQlccapyA4D4yaRwXfBc_B3cg6Y8iMc8rs1klmYw/exec';
+
 function submit() {
-  answers['name'] = document.getElementById('inp-name').value;
+  answers['name']  = document.getElementById('inp-name').value;
   answers['phone'] = document.getElementById('inp-phone').value;
+  answers['time']  = new Date().toLocaleString('ar-SA');
+
+  // إرسال تلقائي للشيت
+  if (APPS_URL && APPS_URL !== 'PASTE_YOUR_APPS_SCRIPT_URL_HERE') {
+    fetch(APPS_URL, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify(answers)
+    }).catch(e => console.warn('Sheet error:', e));
+  }
 
   // Build summary
   const labels = {
@@ -466,4 +471,4 @@ function shareApp() {
 }
 </script>
 </body>
-</html>p]
+</html>
