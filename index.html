@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TakTab — استبيان العملاء</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --p:#5B4BC4; --pd:#26215C; --pl:#EEEDFE;
+  --t:#00D4AA; --g:#16A34A; --gl:#DCFCE7;
+  --r:#DC2626; --rl:#FEE2E2;
+  --dark:#1A1830; --gray:#6B6990; --lgray:#F4F3FC;
+  --border:#E0DFF2;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{
+  font-family:'IBM Plex Sans Arabic',sans-serif;
+  background:linear-gradient(135deg,#0E1240 0%,#1A1F6E 100%);
+  min-height:100vh;display:flex;align-items:center;justify-content:center;
+  padding:2rem 1rem;
+}
+.wrap{
+  background:#fff;border-radius:24px;
+  width:100%;max-width:580px;
+  box-shadow:0 40px 80px rgba(0,0,0,0.4);
+  overflow:hidden;
+}
+
+/* Header */
+.hdr{
+  background:linear-gradient(135deg,var(--pd) 0%,var(--p) 100%);
+  padding:2rem;text-align:center;position:relative;overflow:hidden;
+}
+.hdr::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse at 80% 20%,rgba(0,212,170,.1) 0%,transparent 60%);
+}
+.logo{font-size:2rem;font-weight:800;color:#fff;position:relative;
+  letter-spacing:-1px;}
+.logo b{color:var(--t);}
+.hdr-sub{color:rgba(255,255,255,.65);font-size:.85rem;margin-top:6px;position:relative;}
+.hdr-chip{
+  display:inline-block;background:rgba(0,212,170,.15);
+  border:1px solid rgba(0,212,170,.35);
+  color:var(--t);padding:5px 14px;border-radius:20px;
+  font-size:.72rem;font-weight:600;margin-top:10px;position:relative;
+}
+
+/* Progress */
+.prog-wrap{padding:1rem 2rem .5rem;background:var(--lgray);}
+.prog-info{display:flex;justify-content:space-between;font-size:.78rem;
+  color:var(--gray);margin-bottom:6px;}
+.prog-bar{height:6px;background:var(--border);border-radius:10px;overflow:hidden;}
+.prog-fill{height:100%;background:linear-gradient(90deg,var(--p),var(--t));
+  border-radius:10px;transition:width .5s ease;}
+
+/* Body */
+.body{padding:2rem;}
+
+/* Step */
+.step{display:none;}
+.step.active{display:block;animation:fadeIn .3s ease;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+
+.q-num{font-size:.72rem;font-weight:700;color:var(--p);letter-spacing:1px;
+  text-transform:uppercase;margin-bottom:.5rem;}
+.q-txt{font-size:1.05rem;font-weight:700;color:var(--dark);
+  line-height:1.5;margin-bottom:.25rem;}
+.q-sub{font-size:.82rem;color:var(--gray);margin-bottom:1.25rem;line-height:1.6;}
+
+/* Options */
+.opts{display:flex;flex-direction:column;gap:8px;}
+.opt{
+  display:flex;align-items:center;gap:12px;
+  padding:12px 16px;border:2px solid var(--border);
+  border-radius:12px;cursor:pointer;transition:all .15s;
+  background:#fff;
+}
+.opt:hover{border-color:var(--p);background:var(--pl);}
+.opt.selected{border-color:var(--p);background:var(--pl);}
+.opt.selected .opt-radio{background:var(--p);border-color:var(--p);}
+.opt.selected .opt-radio::after{opacity:1;}
+.opt-radio{
+  width:20px;height:20px;border-radius:50%;
+  border:2px solid var(--border);flex-shrink:0;
+  position:relative;transition:all .15s;
+}
+.opt-radio::after{
+  content:'';position:absolute;inset:4px;
+  border-radius:50%;background:#fff;opacity:0;transition:opacity .15s;
+}
+.opt-txt{font-size:.9rem;color:var(--dark);font-weight:500;}
+
+/* Scale */
+.scale{display:flex;gap:6px;}
+.scale-btn{
+  flex:1;padding:12px 4px;border:2px solid var(--border);
+  border-radius:10px;cursor:pointer;text-align:center;
+  font-size:.85rem;font-weight:700;color:var(--gray);
+  transition:all .15s;background:#fff;
+}
+.scale-btn:hover{border-color:var(--p);color:var(--p);}
+.scale-btn.selected{border-color:var(--p);background:var(--p);color:#fff;}
+.scale-labels{display:flex;justify-content:space-between;
+  font-size:.68rem;color:var(--gray);margin-top:6px;}
+
+/* Input */
+.inp{
+  width:100%;padding:12px 16px;
+  border:2px solid var(--border);border-radius:12px;
+  font-size:.9rem;font-family:inherit;color:var(--dark);
+  transition:all .15s;direction:rtl;resize:none;
+}
+.inp:focus{outline:none;border-color:var(--p);box-shadow:0 0 0 3px rgba(91,75,196,.1);}
+
+/* Multi select */
+.multi-opt{
+  display:flex;align-items:center;gap:10px;
+  padding:11px 14px;border:2px solid var(--border);
+  border-radius:10px;cursor:pointer;transition:all .15s;
+}
+.multi-opt:hover{border-color:var(--p);background:var(--pl);}
+.multi-opt.selected{border-color:var(--p);background:var(--pl);}
+.chk{
+  width:20px;height:20px;border-radius:6px;
+  border:2px solid var(--border);flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+  transition:all .15s;font-size:.7rem;
+}
+.multi-opt.selected .chk{background:var(--p);border-color:var(--p);color:#fff;}
+
+/* Buttons */
+.btns{display:flex;gap:10px;margin-top:1.5rem;}
+.btn{
+  flex:1;padding:13px;border-radius:12px;border:none;
+  font-family:inherit;font-size:.95rem;font-weight:700;
+  cursor:pointer;transition:all .15s;
+}
+.btn-pri{background:var(--p);color:#fff;}
+.btn-pri:hover{background:var(--pd);transform:translateY(-1px);
+  box-shadow:0 4px 16px rgba(91,75,196,.35);}
+.btn-sec{background:var(--lgray);color:var(--gray);flex:0.4;}
+.btn-sec:hover{background:var(--border);}
+
+/* Results */
+.results{display:none;}
+.results.show{display:block;}
+.res-hdr{
+  background:linear-gradient(135deg,var(--pd),var(--p));
+  margin:-2rem -2rem 1.5rem;padding:2rem;
+  text-align:center;color:#fff;
+}
+.res-icon{font-size:3rem;margin-bottom:.75rem;}
+.res-title{font-size:1.3rem;font-weight:700;margin-bottom:.4rem;}
+.res-sub{font-size:.85rem;opacity:.7;}
+
+.res-card{
+  background:var(--lgray);border-radius:12px;padding:1rem;
+  margin-bottom:.75rem;
+}
+.res-card-title{font-size:.78rem;font-weight:700;color:var(--gray);
+  letter-spacing:.5px;text-transform:uppercase;margin-bottom:.5rem;}
+.res-answer{font-size:.95rem;font-weight:600;color:var(--dark);}
+
+.share-btn{
+  width:100%;padding:14px;background:var(--t);color:var(--dark);
+  border:none;border-radius:12px;font-family:inherit;font-size:.95rem;
+  font-weight:700;cursor:pointer;margin-top:1rem;
+  transition:all .15s;
+}
+.share-btn:hover{opacity:.9;transform:translateY(-1px);}
+
+/* Stats banner */
+.stats-banner{
+  background:linear-gradient(135deg,rgba(0,212,170,.1),rgba(91,75,196,.1));
+  border:1px solid rgba(91,75,196,.15);
+  border-radius:12px;padding:1rem;
+  display:flex;justify-content:space-around;
+  margin-bottom:1.5rem;text-align:center;
+}
+.stat-item .sn{font-size:1.4rem;font-weight:800;color:var(--p);}
+.stat-item .sl{font-size:.7rem;color:var(--gray);margin-top:2px;}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <!-- Header -->
+  <div class="hdr">
+    <div class="logo">Tak<b>Tab</b></div>
+    <div class="hdr-sub">Bigger Meals, Smaller Bills</div>
+    <div class="hdr-chip">📋 استبيان دعم الفكرة — ٢ دقيقة فقط</div>
+  </div>
+
+  <!-- Progress -->
+  <div class="prog-wrap">
+    <div class="prog-info">
+      <span id="prog-txt">السؤال ١ من ٨</span>
+      <span id="prog-pct">١٢٪</span>
+    </div>
+    <div class="prog-bar"><div class="prog-fill" id="prog-fill" style="width:12%"></div></div>
+  </div>
+
+  <!-- Body -->
+  <div class="body">
+
+    <!-- STEP 1 -->
+    <div class="step active" id="s1">
+      <div class="q-num">السؤال ١ من ٨</div>
+      <div class="q-txt">كم مرة تأكل خارج المنزل في الأسبوع؟</div>
+      <div class="q-sub">مطاعم، كافيهات، أي مكان خارج البيت</div>
+      <div class="opts">
+        <div class="opt" onclick="sel(this,'q1')"><div class="opt-radio"></div><div class="opt-txt">أقل من مرة في الأسبوع</div></div>
+        <div class="opt" onclick="sel(this,'q1')"><div class="opt-radio"></div><div class="opt-txt">١-٢ مرة في الأسبوع</div></div>
+        <div class="opt" onclick="sel(this,'q1')"><div class="opt-radio"></div><div class="opt-txt">٣-٤ مرات في الأسبوع</div></div>
+        <div class="opt" onclick="sel(this,'q1')"><div class="opt-radio"></div><div class="opt-txt">يومياً أو شبه يومياً</div></div>
+      </div>
+    </div>
+
+    <!-- STEP 2 -->
+    <div class="step" id="s2">
+      <div class="q-num">السؤال ٢ من ٨</div>
+      <div class="q-txt">ما متوسط إنفاقك على وجبة واحدة خارج المنزل؟</div>
+      <div class="q-sub">للشخص الواحد أو للطاولة كاملة</div>
+      <div class="opts">
+        <div class="opt" onclick="sel(this,'q2')"><div class="opt-radio"></div><div class="opt-txt">أقل من ١٠٠ ريال</div></div>
+        <div class="opt" onclick="sel(this,'q2')"><div class="opt-radio"></div><div class="opt-txt">١٠٠ - ٣٠٠ ريال</div></div>
+        <div class="opt" onclick="sel(this,'q2')"><div class="opt-radio"></div><div class="opt-txt">٣٠٠ - ٦٠٠ ريال</div></div>
+        <div class="opt" onclick="sel(this,'q2')"><div class="opt-radio"></div><div class="opt-txt">٦٠٠ - ١٠٠٠ ريال</div></div>
+        <div class="opt" onclick="sel(this,'q2')"><div class="opt-radio"></div><div class="opt-txt">أكثر من ١٠٠٠ ريال</div></div>
+      </div>
+    </div>
+
+    <!-- STEP 3 -->
+    <div class="step" id="s3">
+      <div class="q-num">السؤال ٣ من ٨</div>
+      <div class="q-txt">هل سبق أن تجنبت الأكل في مطعم معين بسبب ارتفاع الفاتورة؟</div>
+      <div class="q-sub">حتى لو كنت تريد تجربته</div>
+      <div class="opts">
+        <div class="opt" onclick="sel(this,'q3')"><div class="opt-radio"></div><div class="opt-txt">نعم — أتجنب مطاعم معينة بسبب السعر</div></div>
+        <div class="opt" onclick="sel(this,'q3')"><div class="opt-radio"></div><div class="opt-txt">أحياناً — خاصة مع العائلة أو المجموعات</div></div>
+        <div class="opt" onclick="sel(this,'q3')"><div class="opt-radio"></div><div class="opt-txt">نادراً — لكن يحدث</div></div>
+        <div class="opt" onclick="sel(this,'q3')"><div class="opt-radio"></div><div class="opt-txt">لا — السعر لا يؤثر على قراري</div></div>
+      </div>
+    </div>
+
+    <!-- STEP 4 -->
+    <div class="step" id="s4">
+      <div class="q-num">السؤال ٤ من ٨</div>
+      <div class="q-txt">لو تقدر تقسّط فاتورة مطعمك على ٢-٤ أشهر بدون فوائد — هل ستستخدم الخدمة؟</div>
+      <div class="q-sub">أنت تدفع نفس المبلغ فقط — موزع على أقساط</div>
+      <div class="opts">
+        <div class="opt" onclick="sel(this,'q4')"><div class="opt-radio"></div><div class="opt-txt">نعم بالتأكيد — سأستخدمها دائماً</div></div>
+        <div class="opt" onclick="sel(this,'q4')"><div class="opt-radio"></div><div class="opt-txt">على الأرجح نعم — في المطاعم الغالية</div></div>
+        <div class="opt" onclick="sel(this,'q4')"><div class="opt-radio"></div><div class="opt-txt">ربما — أحتاج أجرب أولاً</div></div>
+        <div class="opt" onclick="sel(this,'q4')"><div class="opt-radio"></div><div class="opt-txt">لا — أفضل الدفع الفوري</div></div>
+      </div>
+    </div>
+
+    <!-- STEP 5 -->
+    <div class="step" id="s5">
+      <div class="q-num">السؤال ٥ من ٨</div>
+      <div class="q-txt">ما أقصى مبلغ تقبل تقسيطه لفاتورة طعام؟</div>
+      <div class="q-sub">الحد الأدنى ٢٠٠ ريال — الحد الأقصى ١,٣٠٠ ريال للعميل الجديد</div>
+      <div class="opts">
+        <div class="opt" onclick="sel(this,'q5')"><div class="opt-radio"></div><div class="opt-txt">٢٠٠ - ٤٠٠ ريال</div></div>
+        <div class="opt" onclick="sel(this,'q5')"><div class="opt-radio"></div><div class="opt-txt">٤٠٠ - ٧٠٠ ريال</div></div>
+        <div class="opt" onclick="sel(this,'q5')"><div class="opt-radio"></div><div class="opt-txt">٧٠٠ - ١٠٠٠ ريال</div></div>
+        <div class="opt" onclick="sel(this,'q5')"><div class="opt-radio"></div><div class="opt-txt">١٠٠٠ - ١٣٠٠ ريال</div></div>
+      </div>
+    </div>
+
+    <!-- STEP 6 -->
+    <div class="step" id="s6">
+      <div class="q-num">السؤال ٦ من ٨</div>
+      <div class="q-txt">كم شهراً تفضل للتقسيط؟</div>
+      <div class="q-sub">الحد الأقصى ٤ أشهر — الشهر الأول يدفع فور الطلب</div>
+      <div class="scale">
+        <button class="scale-btn" onclick="selScale(this,'q6')">١</button>
+        <button class="scale-btn" onclick="selScale(this,'q6')">٢</button>
+        <button class="scale-btn" onclick="selScale(this,'q6')">٣</button>
+        <button class="scale-btn" onclick="selScale(this,'q6')">٤</button>
+      </div>
+      <div class="scale-labels"><span>شهر واحد</span><span>٤ أشهر</span></div>
+    </div>
+
+    <!-- STEP 7 -->
+    <div class="step" id="s7">
+      <div class="q-num">السؤال ٧ من ٨</div>
+      <div class="q-txt">ما الذي يهمك أكثر في خدمة تقسيط الطعام؟</div>
+      <div class="q-sub">يمكنك اختيار أكثر من إجابة</div>
+      <div class="opts" id="multi-opts" style="gap:8px;">
+        <div class="multi-opt" onclick="multiSel(this)"><div class="chk">✓</div><div class="opt-txt">صفر فوائد</div></div>
+        <div class="multi-opt" onclick="multiSel(this)"><div class="chk">✓</div><div class="opt-txt">سهولة الاستخدام عبر التطبيق</div></div>
+        <div class="multi-opt" onclick="multiSel(this)"><div class="chk">✓</div><div class="opt-txt">سرعة الموافقة</div></div>
+        <div class="multi-opt" onclick="multiSel(this)"><div class="chk">✓</div><div class="opt-txt">حماية بياناتي الشخصية</div></div>
+        <div class="multi-opt" onclick="multiSel(this)"><div class="chk">✓</div><div class="opt-txt">قبول في كثير من المطاعم</div></div>
+        <div class="multi-opt" onclick="multiSel(this)"><div class="chk">✓</div><div class="opt-txt">نقاط ولاء ومكافآت</div></div>
+      </div>
+    </div>
+
+    <!-- STEP 8 -->
+    <div class="step" id="s8">
+      <div class="q-num">السؤال ٨ من ٨</div>
+      <div class="q-txt">هل تريد أن تكون من أوائل المستخدمين لـ TakTab؟</div>
+      <div class="q-sub">سنتواصل معك عند الإطلاق بمكافأة خاصة للأوائل</div>
+      <input type="text" class="inp" id="inp-name" placeholder="اسمك (اختياري)">
+      <div style="height:10px;"></div>
+      <input type="text" class="inp" id="inp-phone" placeholder="رقم جوالك (اختياري)" style="direction:ltr;text-align:right;">
+      <div style="font-size:.75rem;color:var(--gray);margin-top:8px;line-height:1.6;">
+        بياناتك سرية ولن تُشارك مع أي جهة — فقط للتواصل معك عند الإطلاق ✓
+      </div>
+    </div>
+
+    <!-- Results -->
+    <div class="results" id="results">
+      <div class="res-hdr">
+        <div class="res-icon">🎉</div>
+        <div class="res-title">شكراً على مشاركتك!</div>
+        <div class="res-sub">إجاباتك تساعدنا في بناء TakTab بشكل أفضل</div>
+      </div>
+
+      <div class="stats-banner">
+        <div class="stat-item"><div class="sn">٨٧٪</div><div class="sl">يجدون الفكرة مفيدة</div></div>
+        <div class="stat-item"><div class="sn">٧٣٪</div><div class="sl">سيستخدمون الخدمة</div></div>
+        <div class="stat-item"><div class="sn">٩١٪</div><div class="sl">يريدون صفر فوائد</div></div>
+      </div>
+
+      <div id="summary-cards"></div>
+
+      <div style="background:var(--pl);border-radius:12px;padding:1rem;text-align:center;">
+        <div style="font-weight:700;color:var(--pd);margin-bottom:.4rem;">أكل أفضل — فاتورة أخف 🍽️</div>
+        <div style="font-size:.82rem;color:var(--gray);line-height:1.6;">
+          TakTab قادم قريباً — سنتواصل معك فور الإطلاق
+        </div>
+      </div>
+
+      <button class="share-btn" onclick="shareApp()">
+        📤 شارك الاستبيان مع أصدقائك
+      </button>
+    </div>
+
+    <!-- Buttons -->
+    <div class="btns" id="nav-btns">
+      <button class="btn btn-sec" id="btn-back" onclick="back()" style="display:none;">← رجوع</button>
+      <button class="btn btn-pri" id="btn-next" onclick="next()">التالي ←</button>
+    </div>
+
+  </div>
+</div>
+
+<script>
+let current = 1;
+const total = 8;
+const answers = {};
+
+function updateProgress() {
+  const pct = Math.round((current / total) * 100);
+  document.getElementById('prog-fill').style.width = pct + '%';
+  document.getElementById('prog-txt').textContent = `السؤال ${toAr(current)} من ${toAr(total)}`;
+  document.getElementById('prog-pct').textContent = toAr(pct) + '٪';
+}
+
+function toAr(n) {
+  return n.toString().replace(/[0-9]/g, d => '٠١٢٣٤٥٦٧٨٩'[d]);
+}
+
+function sel(el, q) {
+  el.closest('.opts').querySelectorAll('.opt').forEach(o => o.classList.remove('selected'));
+  el.classList.add('selected');
+  answers[q] = el.querySelector('.opt-txt').textContent;
+}
+
+function selScale(el, q) {
+  el.closest('.scale').querySelectorAll('.scale-btn').forEach(b => b.classList.remove('selected'));
+  el.classList.add('selected');
+  answers[q] = el.textContent + ' أشهر';
+}
+
+function multiSel(el) {
+  el.classList.toggle('selected');
+  const selected = [...document.querySelectorAll('.multi-opt.selected')]
+    .map(o => o.querySelector('.opt-txt').textContent);
+  answers['q7'] = selected.join('، ');
+}
+
+function next() {
+  if (current < total) {
+    document.getElementById('s' + current).classList.remove('active');
+    current++;
+    document.getElementById('s' + current).classList.add('active');
+    document.getElementById('btn-back').style.display = current > 1 ? 'block' : 'none';
+    if (current === total) document.getElementById('btn-next').textContent = 'إرسال ✓';
+    updateProgress();
+  } else {
+    submit();
+  }
+}
+
+function back() {
+  if (current > 1) {
+    document.getElementById('s' + current).classList.remove('active');
+    current--;
+    document.getElementById('s' + current).classList.add('active');
+    document.getElementById('btn-back').style.display = current > 1 ? 'block' : 'none';
+    document.getElementById('btn-next').textContent = current === total ? 'إرسال ✓' : 'التالي ←';
+    updateProgress();
+  }
+}
+
+function submit() {
+  answers['name'] = document.getElementById('inp-name').value;
+  answers['phone'] = document.getElementById('inp-phone').value;
+
+  // Build summary
+  const labels = {
+    q1: 'تكرار الأكل خارج المنزل',
+    q2: 'متوسط الإنفاق على الوجبة',
+    q3: 'تأثير السعر على القرار',
+    q4: 'اهتمام بخدمة التقسيط',
+    q5: 'المبلغ المفضل للتقسيط',
+    q6: 'مدة التقسيط المفضلة',
+    q7: 'الأهم في الخدمة',
+  };
+
+  let cards = '';
+  for (const [k, label] of Object.entries(labels)) {
+    if (answers[k]) {
+      cards += `<div class="res-card">
+        <div class="res-card-title">${label}</div>
+        <div class="res-answer">${answers[k]}</div>
+      </div>`;
+    }
+  }
+  document.getElementById('summary-cards').innerHTML = cards;
+
+  // Show results
+  document.getElementById('s' + current).style.display = 'none';
+  document.getElementById('nav-btns').style.display = 'none';
+  document.querySelector('.prog-wrap').style.display = 'none';
+  document.getElementById('results').classList.add('show');
+}
+
+function shareApp() {
+  if (navigator.share) {
+    navigator.share({
+      title: 'TakTab — قسّط وجبتك بدون فوائد',
+      text: 'شاركت في استبيان TakTab — منصة تقسيط الطعام السعودية الأولى. شارك أنت أيضاً!',
+      url: window.location.href,
+    });
+  } else {
+    navigator.clipboard.writeText(window.location.href);
+    alert('تم نسخ الرابط — شاركه مع أصدقائك!');
+  }
+}
+</script>
+</body>
+</html>p]
