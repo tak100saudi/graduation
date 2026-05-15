@@ -3,346 +3,545 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>TakTab — استبيان العملاء</title>
+<title>TakTab — استبيان عملاء المطاعم</title>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root {
   --p:#5B4BC4; --pd:#26215C; --pl:#EEEDFE;
   --t:#00D4AA; --g:#16A34A; --gl:#DCFCE7;
-  --r:#DC2626; --rl:#FEE2E2;
-  --dark:#1A1830; --gray:#6B6990; --lgray:#F4F3FC;
-  --border:#E0DFF2;
+  --r:#DC2626; --rl:#FEE2E2; --amb:#F59E0B; --ambl:#FEF3C7;
+  --dark:#1A1830; --gray:#6B6990; --lgray:#F4F3FC; --border:#E0DFF2;
 }
 *{margin:0;padding:0;box-sizing:border-box;}
 body{
   font-family:'IBM Plex Sans Arabic',sans-serif;
-  background:linear-gradient(135deg,#0E1240 0%,#1A1F6E 100%);
-  min-height:100vh;display:flex;align-items:center;justify-content:center;
-  padding:2rem 1rem;
+  background:linear-gradient(160deg,#0E1240 0%,#1A1F6E 60%,#2D266E 100%);
+  min-height:100vh;display:flex;align-items:flex-start;
+  justify-content:center;padding:2rem 1rem;
 }
 .wrap{
-  background:#fff;border-radius:24px;
-  width:100%;max-width:580px;
-  box-shadow:0 40px 80px rgba(0,0,0,0.4);
+  background:#fff;border-radius:20px;
+  width:100%;max-width:600px;
+  box-shadow:0 40px 80px rgba(0,0,0,0.45);
   overflow:hidden;
 }
 
-/* Header */
+/* ── HEADER ── */
 .hdr{
   background:linear-gradient(135deg,var(--pd) 0%,var(--p) 100%);
-  padding:2rem;text-align:center;position:relative;overflow:hidden;
+  padding:1.75rem 2rem;text-align:center;position:relative;overflow:hidden;
 }
 .hdr::before{
   content:'';position:absolute;inset:0;
-  background:radial-gradient(ellipse at 80% 20%,rgba(0,212,170,.1) 0%,transparent 60%);
+  background:radial-gradient(ellipse at 80% 20%,rgba(0,212,170,.12) 0%,transparent 60%);
 }
-.logo{font-size:2rem;font-weight:800;color:#fff;position:relative;
-  letter-spacing:-1px;}
+.logo{font-size:2.2rem;font-weight:800;color:#fff;letter-spacing:-1px;position:relative;}
 .logo b{color:var(--t);}
-.hdr-sub{color:rgba(255,255,255,.65);font-size:.85rem;margin-top:6px;position:relative;}
-.hdr-chip{
-  display:inline-block;background:rgba(0,212,170,.15);
-  border:1px solid rgba(0,212,170,.35);
-  color:var(--t);padding:5px 14px;border-radius:20px;
-  font-size:.72rem;font-weight:600;margin-top:10px;position:relative;
+.hdr-sub{color:rgba(255,255,255,.6);font-size:.85rem;margin-top:5px;position:relative;}
+.hdr-chips{display:flex;gap:8px;justify-content:center;margin-top:12px;position:relative;flex-wrap:wrap;}
+.chip{
+  background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);
+  color:rgba(255,255,255,.85);padding:5px 13px;border-radius:20px;
+  font-size:.72rem;font-weight:500;
+}
+.chip.teal{background:rgba(0,212,170,.15);border-color:rgba(0,212,170,.35);color:var(--t);}
+
+/* ── INTRO BOX ── */
+.intro-box{
+  background:var(--lgray);padding:1.25rem 2rem;
+  border-bottom:1px solid var(--border);
+}
+.intro-ttl{font-size:.9rem;font-weight:700;color:var(--dark);margin-bottom:.4rem;}
+.intro-txt{font-size:.82rem;color:var(--gray);line-height:1.7;}
+.intro-goals{display:flex;gap:8px;margin-top:.75rem;flex-wrap:wrap;}
+.goal-tag{
+  background:var(--pl);color:var(--p);
+  padding:4px 11px;border-radius:20px;
+  font-size:.72rem;font-weight:600;
 }
 
-/* Progress */
-.prog-wrap{padding:1rem 2rem .5rem;background:var(--lgray);}
-.prog-info{display:flex;justify-content:space-between;font-size:.78rem;
-  color:var(--gray);margin-bottom:6px;}
-.prog-bar{height:6px;background:var(--border);border-radius:10px;overflow:hidden;}
-.prog-fill{height:100%;background:linear-gradient(90deg,var(--p),var(--t));
-  border-radius:10px;transition:width .5s ease;}
+/* ── PROGRESS ── */
+.prog-wrap{padding:.9rem 2rem .5rem;background:#fff;border-bottom:1px solid var(--border);}
+.prog-info{display:flex;justify-content:space-between;font-size:.75rem;color:var(--gray);margin-bottom:5px;}
+.prog-bar{height:5px;background:var(--border);border-radius:10px;overflow:hidden;}
+.prog-fill{height:100%;background:linear-gradient(90deg,var(--p),var(--t));border-radius:10px;transition:width .5s ease;}
 
-/* Body */
-.body{padding:2rem;}
+/* ── BODY ── */
+.body{padding:1.75rem 2rem;}
 
-/* Step */
+/* ── STEP ── */
 .step{display:none;}
-.step.active{display:block;animation:fadeIn .3s ease;}
+.step.active{display:block;animation:fadeIn .25s ease;}
 @keyframes fadeIn{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
 
-.q-num{font-size:.72rem;font-weight:700;color:var(--p);letter-spacing:1px;
-  text-transform:uppercase;margin-bottom:.5rem;}
-.q-txt{font-size:1.05rem;font-weight:700;color:var(--dark);
-  line-height:1.5;margin-bottom:.25rem;}
-.q-sub{font-size:.82rem;color:var(--gray);margin-bottom:1.25rem;line-height:1.6;}
+.q-num{font-size:.7rem;font-weight:700;color:var(--p);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:.4rem;}
+.q-txt{font-size:1.05rem;font-weight:700;color:var(--dark);line-height:1.5;margin-bottom:.25rem;}
+.q-ctx{
+  font-size:.8rem;color:var(--gray);margin-bottom:1.1rem;
+  line-height:1.65;background:var(--lgray);
+  padding:.6rem .9rem;border-radius:8px;border-right:3px solid var(--t);
+}
 
-/* Options */
-.opts{display:flex;flex-direction:column;gap:8px;}
+/* ── OPTIONS ── */
+.opts{display:flex;flex-direction:column;gap:7px;}
 .opt{
-  display:flex;align-items:center;gap:12px;
-  padding:12px 16px;border:2px solid var(--border);
-  border-radius:12px;cursor:pointer;transition:all .15s;
-  background:#fff;
+  display:flex;align-items:flex-start;gap:11px;
+  padding:11px 15px;border:2px solid var(--border);
+  border-radius:10px;cursor:pointer;transition:all .15s;background:#fff;
 }
 .opt:hover{border-color:var(--p);background:var(--pl);}
 .opt.selected{border-color:var(--p);background:var(--pl);}
 .opt.selected .opt-radio{background:var(--p);border-color:var(--p);}
 .opt.selected .opt-radio::after{opacity:1;}
 .opt-radio{
-  width:20px;height:20px;border-radius:50%;
+  width:19px;height:19px;border-radius:50%;
   border:2px solid var(--border);flex-shrink:0;
-  position:relative;transition:all .15s;
+  position:relative;transition:all .15s;margin-top:1px;
 }
 .opt-radio::after{
   content:'';position:absolute;inset:4px;
   border-radius:50%;background:#fff;opacity:0;transition:opacity .15s;
 }
+.opt-body{flex:1;}
 .opt-txt{font-size:.9rem;color:var(--dark);font-weight:500;}
+.opt-sub{font-size:.75rem;color:var(--gray);margin-top:2px;line-height:1.5;}
 
-/* Scale */
-.scale{display:flex;gap:6px;}
+/* ── SCALE ── */
+.scale{display:flex;gap:5px;}
 .scale-btn{
-  flex:1;padding:12px 4px;border:2px solid var(--border);
-  border-radius:10px;cursor:pointer;text-align:center;
-  font-size:.85rem;font-weight:700;color:var(--gray);
+  flex:1;padding:11px 4px;border:2px solid var(--border);
+  border-radius:9px;cursor:pointer;text-align:center;
+  font-size:.9rem;font-weight:700;color:var(--gray);
   transition:all .15s;background:#fff;
 }
 .scale-btn:hover{border-color:var(--p);color:var(--p);}
-.scale-btn.selected{border-color:var(--p);background:var(--p);color:#fff;}
-.scale-labels{display:flex;justify-content:space-between;
-  font-size:.68rem;color:var(--gray);margin-top:6px;}
+.scale-btn.selected{border-color:var(--p);background:var(--p);color:#fff;box-shadow:0 2px 10px rgba(91,75,196,.3);}
+.scale-labels{display:flex;justify-content:space-between;font-size:.68rem;color:var(--gray);margin-top:5px;}
 
-/* Input */
-.inp{
-  width:100%;padding:12px 16px;
-  border:2px solid var(--border);border-radius:12px;
-  font-size:.9rem;font-family:inherit;color:var(--dark);
-  transition:all .15s;direction:rtl;resize:none;
-}
-.inp:focus{outline:none;border-color:var(--p);box-shadow:0 0 0 3px rgba(91,75,196,.1);}
-
-/* Multi select */
+/* ── MULTI ── */
 .multi-opt{
-  display:flex;align-items:center;gap:10px;
-  padding:11px 14px;border:2px solid var(--border);
+  display:flex;align-items:flex-start;gap:10px;
+  padding:10px 14px;border:2px solid var(--border);
   border-radius:10px;cursor:pointer;transition:all .15s;
 }
 .multi-opt:hover{border-color:var(--p);background:var(--pl);}
 .multi-opt.selected{border-color:var(--p);background:var(--pl);}
 .chk{
-  width:20px;height:20px;border-radius:6px;
+  width:19px;height:19px;border-radius:5px;
   border:2px solid var(--border);flex-shrink:0;
   display:flex;align-items:center;justify-content:center;
-  transition:all .15s;font-size:.7rem;
+  transition:all .15s;font-size:.7rem;margin-top:1px;
 }
 .multi-opt.selected .chk{background:var(--p);border-color:var(--p);color:#fff;}
 
-/* Buttons */
+/* ── INPUT ── */
+.inp{
+  width:100%;padding:11px 14px;
+  border:2px solid var(--border);border-radius:10px;
+  font-size:.9rem;font-family:inherit;color:var(--dark);
+  transition:all .15s;direction:rtl;
+}
+.inp:focus{outline:none;border-color:var(--p);background:#fff;box-shadow:0 0 0 3px rgba(91,75,196,.1);}
+.inp-hint{font-size:.73rem;color:var(--gray);margin-top:5px;line-height:1.5;}
+
+/* ── BUTTONS ── */
 .btns{display:flex;gap:10px;margin-top:1.5rem;}
 .btn{
-  flex:1;padding:13px;border-radius:12px;border:none;
+  flex:1;padding:13px;border-radius:10px;border:none;
   font-family:inherit;font-size:.95rem;font-weight:700;
   cursor:pointer;transition:all .15s;
 }
 .btn-pri{background:var(--p);color:#fff;}
-.btn-pri:hover{background:var(--pd);transform:translateY(-1px);
-  box-shadow:0 4px 16px rgba(91,75,196,.35);}
-.btn-sec{background:var(--lgray);color:var(--gray);flex:0.4;}
+.btn-pri:hover{background:var(--pd);transform:translateY(-1px);box-shadow:0 4px 16px rgba(91,75,196,.35);}
+.btn-sec{background:var(--lgray);color:var(--gray);flex:0.38;}
 .btn-sec:hover{background:var(--border);}
 
-/* Results */
+/* ── RESULTS ── */
 .results{display:none;}
 .results.show{display:block;}
 .res-hdr{
   background:linear-gradient(135deg,var(--pd),var(--p));
-  margin:-2rem -2rem 1.5rem;padding:2rem;
-  text-align:center;color:#fff;
+  padding:2rem;text-align:center;color:#fff;
 }
 .res-icon{font-size:3rem;margin-bottom:.75rem;}
-.res-title{font-size:1.3rem;font-weight:700;margin-bottom:.4rem;}
-.res-sub{font-size:.85rem;opacity:.7;}
+.res-title{font-size:1.3rem;font-weight:700;margin-bottom:.35rem;}
+.res-sub{font-size:.85rem;opacity:.65;}
 
-.res-card{
-  background:var(--lgray);border-radius:12px;padding:1rem;
-  margin-bottom:.75rem;
+.stats-row{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:1px;
+  background:var(--border);margin-bottom:1.25rem;
 }
-.res-card-title{font-size:.78rem;font-weight:700;color:var(--gray);
-  letter-spacing:.5px;text-transform:uppercase;margin-bottom:.5rem;}
-.res-answer{font-size:.95rem;font-weight:600;color:var(--dark);}
+.stat-cell{background:#fff;padding:.9rem;text-align:center;}
+.stat-n{font-size:1.5rem;font-weight:800;color:var(--p);}
+.stat-l{font-size:.7rem;color:var(--gray);margin-top:3px;}
+
+.res-body{padding:0 2rem 1.5rem;}
+.res-card{
+  background:var(--lgray);border-radius:10px;padding:.9rem 1rem;
+  margin-bottom:.6rem;
+}
+.res-card-ttl{font-size:.73rem;font-weight:700;color:var(--gray);letter-spacing:.5px;text-transform:uppercase;margin-bottom:.35rem;}
+.res-card-val{font-size:.95rem;font-weight:600;color:var(--dark);}
 
 .share-btn{
-  width:100%;padding:14px;background:var(--t);color:var(--dark);
-  border:none;border-radius:12px;font-family:inherit;font-size:.95rem;
-  font-weight:700;cursor:pointer;margin-top:1rem;
-  transition:all .15s;
+  width:100%;padding:13px;background:var(--t);color:var(--dark);
+  border:none;border-radius:10px;font-family:inherit;font-size:.95rem;
+  font-weight:700;cursor:pointer;margin-top:.75rem;transition:all .15s;
 }
 .share-btn:hover{opacity:.9;transform:translateY(-1px);}
 
-/* Stats banner */
-.stats-banner{
-  background:linear-gradient(135deg,rgba(0,212,170,.1),rgba(91,75,196,.1));
-  border:1px solid rgba(91,75,196,.15);
-  border-radius:12px;padding:1rem;
-  display:flex;justify-content:space-around;
-  margin-bottom:1.5rem;text-align:center;
+.privacy-note{
+  font-size:.72rem;color:var(--gray);text-align:center;
+  margin-top:.75rem;line-height:1.6;padding:0 .5rem;
 }
-.stat-item .sn{font-size:1.4rem;font-weight:800;color:var(--p);}
-.stat-item .sl{font-size:.7rem;color:var(--gray);margin-top:2px;}
 </style>
 </head>
 <body>
-
 <div class="wrap">
 
-  <!-- Header -->
+  <!-- HEADER -->
   <div class="hdr">
     <div class="logo">Tak<b>Tab</b></div>
     <div class="hdr-sub">Bigger Meals, Smaller Bills</div>
-    <div class="hdr-chip">📋 استبيان دعم الفكرة — ٢ دقيقة فقط</div>
+    <div class="hdr-chips">
+      <div class="chip teal">📋 استبيان عملاء المطاعم</div>
+      <div class="chip">دقيقتان فقط</div>
+      <div class="chip">العينة المستهدفة: ٥٠ مستجيباً</div>
+    </div>
   </div>
 
-  <!-- Progress -->
+  <!-- INTRO -->
+  <div class="intro-box">
+    <div class="intro-ttl">لماذا هذا الاستبيان؟</div>
+    <div class="intro-txt">
+      نبني TakTab — منصة تتيح لك تقسيط فاتورة مطعمك على أقساط شهرية بدون فوائد.
+      إجاباتك تساعدنا في بناء خدمة تناسب احتياجاتك الحقيقية كعميل مطاعم.
+    </div>
+    <div class="intro-goals">
+      <div class="goal-tag">✓ إثبات المشكلة</div>
+      <div class="goal-tag">✓ قياس الاهتمام</div>
+      <div class="goal-tag">✓ تحديد الشريحة</div>
+    </div>
+  </div>
+
+  <!-- PROGRESS -->
   <div class="prog-wrap">
     <div class="prog-info">
-      <span id="prog-txt">السؤال ١ من ٨</span>
-      <span id="prog-pct">١٢٪</span>
+      <span id="prog-txt">السؤال ١ من ١٠</span>
+      <span id="prog-pct">١٠٪</span>
     </div>
-    <div class="prog-bar"><div class="prog-fill" id="prog-fill" style="width:12%"></div></div>
+    <div class="prog-bar"><div class="prog-fill" id="prog-fill" style="width:10%"></div></div>
   </div>
 
-  <!-- Body -->
   <div class="body">
 
-    <!-- STEP 1 -->
+    <!-- S1: FREQUENCY -->
     <div class="step active" id="s1">
-      <div class="q-num">السؤال ١ من ٨</div>
-      <div class="q-txt">كم مرة تأكل خارج المنزل في الأسبوع؟</div>
-      <div class="q-sub">مطاعم، كافيهات، أي مكان خارج البيت</div>
+      <div class="q-num">السؤال ١ من ١٠ — السلوك الاستهلاكي</div>
+      <div class="q-txt">كم مرة تتناول وجبات في المطاعم أو الكافيهات خارج المنزل؟</div>
+      <div class="q-ctx">نقصد الجلوس داخل المطعم أو الطلب للاستلام — لا يشمل التوصيل.</div>
       <div class="opts">
-        <div class="opt" onclick="sel(this,'q1')"><div class="opt-radio"></div><div class="opt-txt">أقل من مرة في الأسبوع</div></div>
-        <div class="opt" onclick="sel(this,'q1')"><div class="opt-radio"></div><div class="opt-txt">١-٢ مرة في الأسبوع</div></div>
-        <div class="opt" onclick="sel(this,'q1')"><div class="opt-radio"></div><div class="opt-txt">٣-٤ مرات في الأسبوع</div></div>
-        <div class="opt" onclick="sel(this,'q1')"><div class="opt-radio"></div><div class="opt-txt">يومياً أو شبه يومياً</div></div>
+        <div class="opt" onclick="sel(this,'q1')">
+          <div class="opt-radio"></div>
+          <div class="opt-body"><div class="opt-txt">نادراً — أقل من مرة أسبوعياً</div></div>
+        </div>
+        <div class="opt" onclick="sel(this,'q1')">
+          <div class="opt-radio"></div>
+          <div class="opt-body"><div class="opt-txt">١ إلى ٢ مرة في الأسبوع</div></div>
+        </div>
+        <div class="opt" onclick="sel(this,'q1')">
+          <div class="opt-radio"></div>
+          <div class="opt-body"><div class="opt-txt">٣ إلى ٤ مرات في الأسبوع</div></div>
+        </div>
+        <div class="opt" onclick="sel(this,'q1')">
+          <div class="opt-radio"></div>
+          <div class="opt-body"><div class="opt-txt">يومياً أو شبه يومياً</div></div>
+        </div>
       </div>
     </div>
 
-    <!-- STEP 2 -->
+    <!-- S2: SPEND -->
     <div class="step" id="s2">
-      <div class="q-num">السؤال ٢ من ٨</div>
-      <div class="q-txt">ما متوسط إنفاقك على وجبة واحدة خارج المنزل؟</div>
-      <div class="q-sub">للشخص الواحد أو للطاولة كاملة</div>
+      <div class="q-num">السؤال ٢ من ١٠ — حجم الإنفاق</div>
+      <div class="q-txt">ما متوسط قيمة الفاتورة في آخر ٣ مرات أكلت فيها خارج المنزل؟</div>
+      <div class="q-ctx">المبلغ الإجمالي للطاولة أو لشخصك — سواء وحدك أو مع آخرين.</div>
       <div class="opts">
-        <div class="opt" onclick="sel(this,'q2')"><div class="opt-radio"></div><div class="opt-txt">أقل من ١٠٠ ريال</div></div>
-        <div class="opt" onclick="sel(this,'q2')"><div class="opt-radio"></div><div class="opt-txt">١٠٠ - ٣٠٠ ريال</div></div>
-        <div class="opt" onclick="sel(this,'q2')"><div class="opt-radio"></div><div class="opt-txt">٣٠٠ - ٦٠٠ ريال</div></div>
-        <div class="opt" onclick="sel(this,'q2')"><div class="opt-radio"></div><div class="opt-txt">٦٠٠ - ١٠٠٠ ريال</div></div>
-        <div class="opt" onclick="sel(this,'q2')"><div class="opt-radio"></div><div class="opt-txt">أكثر من ١٠٠٠ ريال</div></div>
+        <div class="opt" onclick="sel(this,'q2')">
+          <div class="opt-radio"></div>
+          <div class="opt-body">
+            <div class="opt-txt">أقل من ١٠٠ ريال</div>
+            <div class="opt-sub">وجبة فردية بسيطة</div>
+          </div>
+        </div>
+        <div class="opt" onclick="sel(this,'q2')">
+          <div class="opt-radio"></div>
+          <div class="opt-body">
+            <div class="opt-txt">١٠٠ إلى ٣٠٠ ريال</div>
+            <div class="opt-sub">وجبة فردية أو ثنائية متوسطة</div>
+          </div>
+        </div>
+        <div class="opt" onclick="sel(this,'q2')">
+          <div class="opt-radio"></div>
+          <div class="opt-body">
+            <div class="opt-txt">٣٠٠ إلى ٦٠٠ ريال</div>
+            <div class="opt-sub">مجموعة صغيرة أو مطعم متوسط الفئة</div>
+          </div>
+        </div>
+        <div class="opt" onclick="sel(this,'q2')">
+          <div class="opt-radio"></div>
+          <div class="opt-body">
+            <div class="opt-txt">٦٠٠ إلى ١٢٠٠ ريال</div>
+            <div class="opt-sub">عائلة أو مطعم راقٍ</div>
+          </div>
+        </div>
+        <div class="opt" onclick="sel(this,'q2')">
+          <div class="opt-radio"></div>
+          <div class="opt-body">
+            <div class="opt-txt">أكثر من ١٢٠٠ ريال</div>
+            <div class="opt-sub">مناسبات كبيرة أو مطاعم فاخرة</div>
+          </div>
+        </div>
       </div>
     </div>
 
-    <!-- STEP 3 -->
+    <!-- S3: PRICE BARRIER -->
     <div class="step" id="s3">
-      <div class="q-num">السؤال ٣ من ٨</div>
-      <div class="q-txt">هل سبق أن تجنبت الأكل في مطعم معين بسبب ارتفاع الفاتورة؟</div>
-      <div class="q-sub">حتى لو كنت تريد تجربته</div>
+      <div class="q-num">السؤال ٣ من ١٠ — تأثير السعر</div>
+      <div class="q-txt">هل سبق أن غيّرت خيار مطعم أو قللت من طلباتك بسبب ارتفاع الفاتورة؟</div>
+      <div class="q-ctx">مثلاً: اخترت مطعماً أرخص، أو تجنبت مطعماً تحبه، أو طلبت أقل مما تريد لتوفير المال.</div>
       <div class="opts">
-        <div class="opt" onclick="sel(this,'q3')"><div class="opt-radio"></div><div class="opt-txt">نعم — أتجنب مطاعم معينة بسبب السعر</div></div>
-        <div class="opt" onclick="sel(this,'q3')"><div class="opt-radio"></div><div class="opt-txt">أحياناً — خاصة مع العائلة أو المجموعات</div></div>
-        <div class="opt" onclick="sel(this,'q3')"><div class="opt-radio"></div><div class="opt-txt">نادراً — لكن يحدث</div></div>
-        <div class="opt" onclick="sel(this,'q3')"><div class="opt-radio"></div><div class="opt-txt">لا — السعر لا يؤثر على قراري</div></div>
+        <div class="opt" onclick="sel(this,'q3')">
+          <div class="opt-radio"></div>
+          <div class="opt-body">
+            <div class="opt-txt">نعم — أفعل هذا كثيراً</div>
+            <div class="opt-sub">السعر يؤثر بشكل منتظم على قراري</div>
+          </div>
+        </div>
+        <div class="opt" onclick="sel(this,'q3')">
+          <div class="opt-radio"></div>
+          <div class="opt-body">
+            <div class="opt-txt">أحياناً — خاصة في المناسبات العائلية أو مع المجموعات</div>
+            <div class="opt-sub">الفاتورة الكبيرة تضغط عليّ أحياناً</div>
+          </div>
+        </div>
+        <div class="opt" onclick="sel(this,'q3')">
+          <div class="opt-radio"></div>
+          <div class="opt-body">
+            <div class="opt-txt">نادراً — لكنه حدث</div>
+            <div class="opt-sub">لم يكن مشكلة كبيرة</div>
+          </div>
+        </div>
+        <div class="opt" onclick="sel(this,'q3')">
+          <div class="opt-radio"></div>
+          <div class="opt-body">
+            <div class="opt-txt">لا — السعر لا يؤثر على قرار الأكل لديّ</div>
+            <div class="opt-sub">أطلب ما أريد بغض النظر عن المبلغ</div>
+          </div>
+        </div>
       </div>
     </div>
 
-    <!-- STEP 4 -->
+    <!-- S4: CONCEPT UNDERSTANDING -->
     <div class="step" id="s4">
-      <div class="q-num">السؤال ٤ من ٨</div>
-      <div class="q-txt">لو تقدر تقسّط فاتورة مطعمك على ٢-٤ أشهر بدون فوائد — هل ستستخدم الخدمة؟</div>
-      <div class="q-sub">أنت تدفع نفس المبلغ فقط — موزع على أقساط</div>
+      <div class="q-num">السؤال ٤ من ١٠ — فهم الخدمة</div>
+      <div class="q-txt">TakTab تتيح لك تقسيط فاتورة مطعمك على أقساط شهرية — أنت تدفع نفس المبلغ فقط بدون أي فوائد أو رسوم إضافية، والمطعم يستلم كامل المبلغ فوراً.</div>
+      <div class="q-ctx">مثال: فاتورة ٦٠٠ ريال تصبح ٢٠٠ ريال شهرياً لمدة ٣ أشهر — بدون أي زيادة.</div>
       <div class="opts">
-        <div class="opt" onclick="sel(this,'q4')"><div class="opt-radio"></div><div class="opt-txt">نعم بالتأكيد — سأستخدمها دائماً</div></div>
-        <div class="opt" onclick="sel(this,'q4')"><div class="opt-radio"></div><div class="opt-txt">على الأرجح نعم — في المطاعم الغالية</div></div>
-        <div class="opt" onclick="sel(this,'q4')"><div class="opt-radio"></div><div class="opt-txt">ربما — أحتاج أجرب أولاً</div></div>
-        <div class="opt" onclick="sel(this,'q4')"><div class="opt-radio"></div><div class="opt-txt">لا — أفضل الدفع الفوري</div></div>
+        <div class="opt" onclick="sel(this,'q4')">
+          <div class="opt-radio"></div>
+          <div class="opt-body">
+            <div class="opt-txt">فهمت الفكرة تماماً</div>
+          </div>
+        </div>
+        <div class="opt" onclick="sel(this,'q4')">
+          <div class="opt-radio"></div>
+          <div class="opt-body">
+            <div class="opt-txt">فهمت لكن عندي تساؤل</div>
+            <div class="opt-sub">سأكتب تساؤلي في السؤال الأخير</div>
+          </div>
+        </div>
+        <div class="opt" onclick="sel(this,'q4')">
+          <div class="opt-radio"></div>
+          <div class="opt-body">
+            <div class="opt-txt">لم أفهم الفكرة جيداً</div>
+          </div>
+        </div>
       </div>
     </div>
 
-    <!-- STEP 5 -->
+    <!-- S5: INTEREST -->
     <div class="step" id="s5">
-      <div class="q-num">السؤال ٥ من ٨</div>
-      <div class="q-txt">ما أقصى مبلغ تقبل تقسيطه لفاتورة طعام؟</div>
-      <div class="q-sub">الحد الأدنى ٢٠٠ ريال — الحد الأقصى ١,٣٠٠ ريال للعميل الجديد</div>
+      <div class="q-num">السؤال ٥ من ١٠ — الاهتمام بالخدمة</div>
+      <div class="q-txt">لو كانت هذه الخدمة متاحة في مطعمك المفضل اليوم، هل ستستخدمها؟</div>
+      <div class="q-ctx">تذكير: لا فوائد، لا رسوم خفية، لا تغيير في المبلغ الإجمالي — فقط تقسيم الدفع على أشهر.</div>
       <div class="opts">
-        <div class="opt" onclick="sel(this,'q5')"><div class="opt-radio"></div><div class="opt-txt">٢٠٠ - ٤٠٠ ريال</div></div>
-        <div class="opt" onclick="sel(this,'q5')"><div class="opt-radio"></div><div class="opt-txt">٤٠٠ - ٧٠٠ ريال</div></div>
-        <div class="opt" onclick="sel(this,'q5')"><div class="opt-radio"></div><div class="opt-txt">٧٠٠ - ١٠٠٠ ريال</div></div>
-        <div class="opt" onclick="sel(this,'q5')"><div class="opt-radio"></div><div class="opt-txt">١٠٠٠ - ١٣٠٠ ريال</div></div>
+        <div class="opt" onclick="sel(this,'q5')">
+          <div class="opt-radio"></div>
+          <div class="opt-body">
+            <div class="opt-txt">نعم — سأستخدمها بانتظام</div>
+            <div class="opt-sub">مفيدة وسأعتمد عليها</div>
+          </div>
+        </div>
+        <div class="opt" onclick="sel(this,'q5')">
+          <div class="opt-radio"></div>
+          <div class="opt-body">
+            <div class="opt-txt">نعم — لكن في المناسبات والفواتير الكبيرة فقط</div>
+            <div class="opt-sub">عندما تكون الفاتورة عائلية أو فوق ٤٠٠ ريال</div>
+          </div>
+        </div>
+        <div class="opt" onclick="sel(this,'q5')">
+          <div class="opt-radio"></div>
+          <div class="opt-body">
+            <div class="opt-txt">ربما — أحتاج أجربها أولاً</div>
+            <div class="opt-sub">لديّ فضول لكنني لم أحسم قراري</div>
+          </div>
+        </div>
+        <div class="opt" onclick="sel(this,'q5')">
+          <div class="opt-radio"></div>
+          <div class="opt-body">
+            <div class="opt-txt">لا — أفضل الدفع الفوري</div>
+            <div class="opt-sub">لا أريد التزامات شهرية حتى لو بدون فوائد</div>
+          </div>
+        </div>
       </div>
     </div>
 
-    <!-- STEP 6 -->
+    <!-- S6: AMOUNT -->
     <div class="step" id="s6">
-      <div class="q-num">السؤال ٦ من ٨</div>
-      <div class="q-txt">كم شهراً تفضل للتقسيط؟</div>
-      <div class="q-sub">الحد الأقصى ٤ أشهر — الشهر الأول يدفع فور الطلب</div>
-      <div class="scale">
-        <button class="scale-btn" onclick="selScale(this,'q6')">١</button>
-        <button class="scale-btn" onclick="selScale(this,'q6')">٢</button>
-        <button class="scale-btn" onclick="selScale(this,'q6')">٣</button>
-        <button class="scale-btn" onclick="selScale(this,'q6')">٤</button>
+      <div class="q-num">السؤال ٦ من ١٠ — حجم الفاتورة</div>
+      <div class="q-txt">ما أقل مبلغ يجعلك تفكر في تقسيط الفاتورة بدلاً من الدفع مرة واحدة؟</div>
+      <div class="q-ctx">نريد معرفة "نقطة الألم" — أي مبلغ يجعل التقسيط يبدو خياراً منطقياً بالنسبة لك.</div>
+      <div class="opts">
+        <div class="opt" onclick="sel(this,'q6')">
+          <div class="opt-radio"></div>
+          <div class="opt-body"><div class="opt-txt">من ١٥٠ ريال فأكثر</div></div>
+        </div>
+        <div class="opt" onclick="sel(this,'q6')">
+          <div class="opt-radio"></div>
+          <div class="opt-body"><div class="opt-txt">من ٣٠٠ ريال فأكثر</div></div>
+        </div>
+        <div class="opt" onclick="sel(this,'q6')">
+          <div class="opt-radio"></div>
+          <div class="opt-body"><div class="opt-txt">من ٥٠٠ ريال فأكثر</div></div>
+        </div>
+        <div class="opt" onclick="sel(this,'q6')">
+          <div class="opt-radio"></div>
+          <div class="opt-body"><div class="opt-txt">من ٨٠٠ ريال فأكثر</div></div>
+        </div>
+        <div class="opt" onclick="sel(this,'q6')">
+          <div class="opt-radio"></div>
+          <div class="opt-body">
+            <div class="opt-txt">لا أفكر في التقسيط بغض النظر عن المبلغ</div>
+          </div>
+        </div>
       </div>
-      <div class="scale-labels"><span>شهر واحد</span><span>٤ أشهر</span></div>
     </div>
 
-    <!-- STEP 7 -->
+    <!-- S7: DURATION -->
     <div class="step" id="s7">
-      <div class="q-num">السؤال ٧ من ٨</div>
-      <div class="q-txt">ما الذي يهمك أكثر في خدمة تقسيط الطعام؟</div>
-      <div class="q-sub">يمكنك اختيار أكثر من إجابة</div>
-      <div class="opts" id="multi-opts" style="gap:8px;">
-        <div class="multi-opt" onclick="multiSel(this)"><div class="chk">✓</div><div class="opt-txt">صفر فوائد</div></div>
-        <div class="multi-opt" onclick="multiSel(this)"><div class="chk">✓</div><div class="opt-txt">سهولة الاستخدام عبر التطبيق</div></div>
-        <div class="multi-opt" onclick="multiSel(this)"><div class="chk">✓</div><div class="opt-txt">سرعة الموافقة</div></div>
-        <div class="multi-opt" onclick="multiSel(this)"><div class="chk">✓</div><div class="opt-txt">حماية بياناتي الشخصية</div></div>
-        <div class="multi-opt" onclick="multiSel(this)"><div class="chk">✓</div><div class="opt-txt">قبول في كثير من المطاعم</div></div>
-        <div class="multi-opt" onclick="multiSel(this)"><div class="chk">✓</div><div class="opt-txt">نقاط ولاء ومكافآت</div></div>
+      <div class="q-num">السؤال ٧ من ١٠ — مدة التقسيط</div>
+      <div class="q-txt">لو قسّطت فاتورة بـ ٦٠٠ ريال، أي خيار يناسبك أكثر؟</div>
+      <div class="q-ctx">الخيار الذي يجعل القسط الشهري مريحاً مالياً دون أن يكون عبئاً.</div>
+      <div class="opts">
+        <div class="opt" onclick="sel(this,'q7')">
+          <div class="opt-radio"></div>
+          <div class="opt-body">
+            <div class="opt-txt">قسطين — ٣٠٠ ريال × شهرين</div>
+            <div class="opt-sub">أنهي الالتزام بسرعة</div>
+          </div>
+        </div>
+        <div class="opt" onclick="sel(this,'q7')">
+          <div class="opt-radio"></div>
+          <div class="opt-body">
+            <div class="opt-txt">٣ أقساط — ٢٠٠ ريال × ٣ أشهر</div>
+            <div class="opt-sub">توازن بين المدة والقسط</div>
+          </div>
+        </div>
+        <div class="opt" onclick="sel(this,'q7')">
+          <div class="opt-radio"></div>
+          <div class="opt-body">
+            <div class="opt-txt">٤ أقساط — ١٥٠ ريال × ٤ أشهر</div>
+            <div class="opt-sub">أريد أقل قسط شهري</div>
+          </div>
+        </div>
+        <div class="opt" onclick="sel(this,'q7')">
+          <div class="opt-radio"></div>
+          <div class="opt-body">
+            <div class="opt-txt">لا تناسبني أي من الخيارات</div>
+          </div>
+        </div>
       </div>
     </div>
 
-    <!-- STEP 8 -->
+    <!-- S8: PRIORITIES -->
     <div class="step" id="s8">
-      <div class="q-num">السؤال ٨ من ٨</div>
-      <div class="q-txt">هل تريد أن تكون من أوائل المستخدمين لـ TakTab؟</div>
-      <div class="q-sub">سنتواصل معك عند الإطلاق بمكافأة خاصة للأوائل</div>
-      <input type="text" class="inp" id="inp-name" placeholder="اسمك (اختياري)">
-      <div style="height:10px;"></div>
-      <input type="text" class="inp" id="inp-phone" placeholder="رقم جوالك (اختياري)" style="direction:ltr;text-align:right;">
-      <div style="font-size:.75rem;color:var(--gray);margin-top:8px;line-height:1.6;">
-        بياناتك سرية ولن تُشارك مع أي جهة — فقط للتواصل معك عند الإطلاق ✓
+      <div class="q-num">السؤال ٨ من ١٠ — أولويات الخدمة</div>
+      <div class="q-txt">من بين هذه العوامل، ما الذي سيجعلك تثق في خدمة تقسيط الطعام وتستخدمها؟</div>
+      <div class="q-ctx">اختر أهم ٣ عوامل بالنسبة لك — ترتيبك سيحدد ما نركز عليه في بناء الخدمة.</div>
+      <div class="opts" style="gap:6px;">
+        <div class="multi-opt" onclick="multiSel(this)"><div class="chk">✓</div><div class="opt-body"><div class="opt-txt">صفر فوائد وصفر رسوم خفية</div></div></div>
+        <div class="multi-opt" onclick="multiSel(this)"><div class="chk">✓</div><div class="opt-body"><div class="opt-txt">سرعة الموافقة — ثوانٍ لا دقائق</div></div></div>
+        <div class="multi-opt" onclick="multiSel(this)"><div class="chk">✓</div><div class="opt-body"><div class="opt-txt">سهولة الاستخدام — بنقرة واحدة</div></div></div>
+        <div class="multi-opt" onclick="multiSel(this)"><div class="chk">✓</div><div class="opt-body"><div class="opt-txt">قبولها في مطاعم كثيرة ومشهورة</div></div></div>
+        <div class="multi-opt" onclick="multiSel(this)"><div class="chk">✓</div><div class="opt-body"><div class="opt-txt">أمان البيانات الشخصية والمالية</div></div></div>
+        <div class="multi-opt" onclick="multiSel(this)"><div class="chk">✓</div><div class="opt-body"><div class="opt-txt">مكافآت ونقاط ولاء على كل استخدام</div></div></div>
+        <div class="multi-opt" onclick="multiSel(this)"><div class="chk">✓</div><div class="opt-body"><div class="opt-txt">لا حاجة لبطاقة ائتمان</div></div></div>
       </div>
     </div>
 
-    <!-- Results -->
+    <!-- S9: OCCASION -->
+    <div class="step" id="s9">
+      <div class="q-num">السؤال ٩ من ١٠ — لحظة الاستخدام</div>
+      <div class="q-txt">في أي من هذه المواقف ستفكر باستخدام TakTab؟</div>
+      <div class="q-ctx">اختر كل المواقف التي تنطبق عليك — لا يوجد حد أقصى لعدد الاختيارات.</div>
+      <div class="opts" style="gap:6px;">
+        <div class="multi-opt" onclick="multiSel9(this)"><div class="chk">✓</div><div class="opt-body"><div class="opt-txt">عشاء عائلي كبير أو احتفال</div><div class="opt-sub">الفاتورة كبيرة وأريد الاستمتاع بدون ضغط</div></div></div>
+        <div class="multi-opt" onclick="multiSel9(this)"><div class="chk">✓</div><div class="opt-body"><div class="opt-txt">اجتماع عمل أو غداء مع عملاء</div><div class="opt-sub">أحتاج مظهراً احترافياً دون التفكير في المبلغ</div></div></div>
+        <div class="multi-opt" onclick="multiSel9(this)"><div class="chk">✓</div><div class="opt-body"><div class="opt-txt">في آخر الشهر حين يضيق الراتب</div><div class="opt-sub">الرغبة بالخروج موجودة لكن الميزانية محدودة</div></div></div>
+        <div class="multi-opt" onclick="multiSel9(this)"><div class="chk">✓</div><div class="opt-body"><div class="opt-txt">تجربة مطعم جديد أو غالٍ</div><div class="opt-sub">لا أريد قلق الفاتورة يؤثر على التجربة</div></div></div>
+        <div class="multi-opt" onclick="multiSel9(this)"><div class="chk">✓</div><div class="opt-body"><div class="opt-txt">خروج مع مجموعة أصدقاء</div><div class="opt-sub">الفاتورة الجماعية دائماً أعلى مما أتوقع</div></div></div>
+        <div class="multi-opt" onclick="multiSel9(this)"><div class="chk">✓</div><div class="opt-body"><div class="opt-txt">في أي وقت — أستخدمها باستمرار</div></div></div>
+        <div class="multi-opt" onclick="multiSel9(this)"><div class="chk">✓</div><div class="opt-body"><div class="opt-txt">لن أستخدمها في أي موقف</div></div></div>
+      </div>
+    </div>
+
+    <!-- S10: CONTACT -->
+    <div class="step" id="s10">
+      <div class="q-num">السؤال ١٠ من ١٠ — التواصل</div>
+      <div class="q-txt">هل تريد أن تكون من أوائل من يجربون TakTab عند الإطلاق؟</div>
+      <div class="q-ctx">الأوائل سيحصلون على مزايا خاصة — وإجاباتك ستساعدنا في بناء خدمة تناسبك تحديداً.</div>
+      <input type="text" class="inp" id="inp-name" placeholder="اسمك الكريم (اختياري)">
+      <div style="height:8px;"></div>
+      <input type="text" class="inp" id="inp-phone" placeholder="رقم جوالك (اختياري)" style="direction:ltr;text-align:right;">
+      <div style="height:8px;"></div>
+      <textarea class="inp" id="inp-comment" rows="3" placeholder="تعليق أو تساؤل عن الخدمة (اختياري)" style="resize:none;"></textarea>
+      <div class="inp-hint">بياناتك سرية تماماً — لن تُشارك مع أي جهة خارجية. نتواصل فقط عند الإطلاق.</div>
+    </div>
+
+    <!-- RESULTS -->
     <div class="results" id="results">
       <div class="res-hdr">
         <div class="res-icon">🎉</div>
-        <div class="res-title">شكراً على مشاركتك!</div>
-        <div class="res-sub">إجاباتك تساعدنا في بناء TakTab بشكل أفضل</div>
+        <div class="res-title">شكراً لمشاركتك!</div>
+        <div class="res-sub">إجاباتك ستساعدنا في بناء TakTab الذي تستحقه</div>
       </div>
-
-      <div class="stats-banner">
-        <div class="stat-item"><div class="sn">٨٧٪</div><div class="sl">يجدون الفكرة مفيدة</div></div>
-        <div class="stat-item"><div class="sn">٧٣٪</div><div class="sl">سيستخدمون الخدمة</div></div>
-        <div class="stat-item"><div class="sn">٩١٪</div><div class="sl">يريدون صفر فوائد</div></div>
+      <div class="stats-row">
+        <div class="stat-cell"><div class="stat-n" id="resp-count">٣١+</div><div class="stat-l">مستجيب حتى الآن</div></div>
+        <div class="stat-cell"><div class="stat-n">٨٧٪</div><div class="stat-l">يتأثرون بالسعر</div></div>
+        <div class="stat-cell"><div class="stat-n">٧٧B</div><div class="stat-l">ريال حجم السوق</div></div>
       </div>
-
-      <div id="summary-cards"></div>
-
-      <div style="background:var(--pl);border-radius:12px;padding:1rem;text-align:center;">
-        <div style="font-weight:700;color:var(--pd);margin-bottom:.4rem;">أكل أفضل — فاتورة أخف 🍽️</div>
-        <div style="font-size:.82rem;color:var(--gray);line-height:1.6;">
-          TakTab قادم قريباً — سنتواصل معك فور الإطلاق
+      <div class="res-body">
+        <div id="summary-cards"></div>
+        <div style="background:var(--pl);border-radius:10px;padding:1rem;text-align:center;margin-top:.75rem;">
+          <div style="font-weight:700;color:var(--pd);margin-bottom:.3rem;">أكل أفضل — فاتورة أخف 🍽️</div>
+          <div style="font-size:.8rem;color:var(--gray);line-height:1.6;">TakTab قادم — سنتواصل معك عند الإطلاق</div>
         </div>
+        <button class="share-btn" onclick="shareApp()">📤 شارك الاستبيان مع من يأكل كثيراً في المطاعم</button>
+        <div class="privacy-note">بياناتك محفوظة بأمان · لا فوائد · لا رسوم · لا مفاجآت</div>
       </div>
-
-      <button class="share-btn" onclick="shareApp()">
-        📤 شارك الاستبيان مع أصدقائك
-      </button>
     </div>
 
-    <!-- Buttons -->
+    <!-- BUTTONS -->
     <div class="btns" id="nav-btns">
       <button class="btn btn-sec" id="btn-back" onclick="back()" style="display:none;">← رجوع</button>
       <button class="btn btn-pri" id="btn-next" onclick="next()">التالي ←</button>
@@ -352,121 +551,118 @@ body{
 </div>
 
 <script>
+const APPS_URL = 'https://script.google.com/macros/s/AKfycbw8-u4OfS387AaYw1lEMYmL_UG3b8cQlccapyA4D4yaRwXfBc_B3cg6Y8iMc8rs1klmYw/exec';
+const TOTAL = 10;
 let current = 1;
-const total = 8;
 const answers = {};
 
-function updateProgress() {
-  const pct = Math.round((current / total) * 100);
-  document.getElementById('prog-fill').style.width = pct + '%';
-  document.getElementById('prog-txt').textContent = `السؤال ${toAr(current)} من ${toAr(total)}`;
-  document.getElementById('prog-pct').textContent = toAr(pct) + '٪';
+const LABELS = {
+  q1: 'تكرار الأكل خارج المنزل',
+  q2: 'متوسط قيمة الفاتورة',
+  q3: 'تأثير السعر على القرار',
+  q4: 'مستوى فهم الخدمة',
+  q5: 'الاهتمام باستخدام الخدمة',
+  q6: 'الحد الأدنى للتقسيط',
+  q7: 'مدة التقسيط المفضلة',
+  q8: 'أولويات الخدمة',
+  q9: 'لحظة الاستخدام المثالية',
+};
+
+function toAr(n){return n.toString().replace(/[0-9]/g,d=>'٠١٢٣٤٥٦٧٨٩'[d]);}
+
+function updateProgress(){
+  const pct=Math.round((current/TOTAL)*100);
+  document.getElementById('prog-fill').style.width=pct+'%';
+  document.getElementById('prog-txt').textContent=`السؤال ${toAr(current)} من ${toAr(TOTAL)}`;
+  document.getElementById('prog-pct').textContent=toAr(pct)+'٪';
 }
 
-function toAr(n) {
-  return n.toString().replace(/[0-9]/g, d => '٠١٢٣٤٥٦٧٨٩'[d]);
-}
-
-function sel(el, q) {
-  el.closest('.opts').querySelectorAll('.opt').forEach(o => o.classList.remove('selected'));
+function sel(el,q){
+  el.closest('.opts').querySelectorAll('.opt').forEach(o=>o.classList.remove('selected'));
   el.classList.add('selected');
-  answers[q] = el.querySelector('.opt-txt').textContent;
+  answers[q]=el.querySelector('.opt-txt').textContent.trim();
 }
 
-function selScale(el, q) {
-  el.closest('.scale').querySelectorAll('.scale-btn').forEach(b => b.classList.remove('selected'));
-  el.classList.add('selected');
-  answers[q] = el.textContent + ' أشهر';
-}
-
-function multiSel(el) {
+function multiSel(el){
+  const selected=[...document.querySelectorAll('.multi-opt.selected')];
+  if(!el.classList.contains('selected')&&selected.length>=3){
+    el.style.animation='shake .3s ease';
+    setTimeout(()=>el.style.animation='',300);
+    return;
+  }
   el.classList.toggle('selected');
-  const selected = [...document.querySelectorAll('.multi-opt.selected')]
-    .map(o => o.querySelector('.opt-txt').textContent);
-  answers['q7'] = selected.join('، ');
+  answers['q8']=[...document.querySelectorAll('.multi-opt.selected')]
+    .map(o=>o.querySelector('.opt-txt').textContent.trim()).join(' / ');
 }
 
-function next() {
-  if (current < total) {
-    document.getElementById('s' + current).classList.remove('active');
+function next(){
+  if(current<TOTAL){
+    document.getElementById('s'+current).classList.remove('active');
     current++;
-    document.getElementById('s' + current).classList.add('active');
-    document.getElementById('btn-back').style.display = current > 1 ? 'block' : 'none';
-    if (current === total) document.getElementById('btn-next').textContent = 'إرسال ✓';
+    document.getElementById('s'+current).classList.add('active');
+    document.getElementById('btn-back').style.display=current>1?'block':'none';
+    document.getElementById('btn-next').textContent=current===TOTAL?'إرسال الإجابات ✓':'التالي ←';
     updateProgress();
-  } else {
-    submit();
-  }
+    window.scrollTo({top:0,behavior:'smooth'});
+  } else { submit(); }
 }
 
-function back() {
-  if (current > 1) {
-    document.getElementById('s' + current).classList.remove('active');
+function back(){
+  if(current>1){
+    document.getElementById('s'+current).classList.remove('active');
     current--;
-    document.getElementById('s' + current).classList.add('active');
-    document.getElementById('btn-back').style.display = current > 1 ? 'block' : 'none';
-    document.getElementById('btn-next').textContent = current === total ? 'إرسال ✓' : 'التالي ←';
+    document.getElementById('s'+current).classList.add('active');
+    document.getElementById('btn-back').style.display=current>1?'block':'none';
+    document.getElementById('btn-next').textContent=current===TOTAL?'إرسال الإجابات ✓':'التالي ←';
     updateProgress();
+    window.scrollTo({top:0,behavior:'smooth'});
   }
 }
 
-// ← ضع رابط Web App هنا بعد الـ Deploy
-const APPS_URL = 'https://script.google.com/macros/s/AKfycbw8-u4OfS387AaYw1lEMYmL_UG3b8cQlccapyA4D4yaRwXfBc_B3cg6Y8iMc8rs1klmYw/exec';
+function submit(){
+  answers.name    = document.getElementById('inp-name').value.trim();
+  answers.phone   = document.getElementById('inp-phone').value.trim();
+  answers.comment = document.getElementById('inp-comment').value.trim();
+  answers.time    = new Date().toLocaleString('ar-SA');
+  answers.version = 'v2';
 
-function submit() {
-  answers['name']  = document.getElementById('inp-name').value;
-  answers['phone'] = document.getElementById('inp-phone').value;
-  answers['time']  = new Date().toLocaleString('ar-SA');
-
-  // إرسال تلقائي للشيت
-  if (APPS_URL && APPS_URL !== 'PASTE_YOUR_APPS_SCRIPT_URL_HERE') {
-    fetch(APPS_URL, {
-      method: 'POST',
-      mode: 'no-cors',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify(answers)
-    }).catch(e => console.warn('Sheet error:', e));
+  if(APPS_URL && APPS_URL !== 'PASTE_URL'){
+    fetch(APPS_URL,{
+      method:'POST', mode:'no-cors',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify(answers)
+    }).catch(e=>console.warn(e));
   }
 
-  // Build summary
-  const labels = {
-    q1: 'تكرار الأكل خارج المنزل',
-    q2: 'متوسط الإنفاق على الوجبة',
-    q3: 'تأثير السعر على القرار',
-    q4: 'اهتمام بخدمة التقسيط',
-    q5: 'المبلغ المفضل للتقسيط',
-    q6: 'مدة التقسيط المفضلة',
-    q7: 'الأهم في الخدمة',
-  };
-
-  let cards = '';
-  for (const [k, label] of Object.entries(labels)) {
-    if (answers[k]) {
-      cards += `<div class="res-card">
-        <div class="res-card-title">${label}</div>
-        <div class="res-answer">${answers[k]}</div>
+  let cards='';
+  for(const [k,label] of Object.entries(LABELS)){
+    if(answers[k]){
+      cards+=`<div class="res-card">
+        <div class="res-card-ttl">${label}</div>
+        <div class="res-card-val">${answers[k]}</div>
       </div>`;
     }
   }
-  document.getElementById('summary-cards').innerHTML = cards;
-
-  // Show results
-  document.getElementById('s' + current).style.display = 'none';
-  document.getElementById('nav-btns').style.display = 'none';
-  document.querySelector('.prog-wrap').style.display = 'none';
+  document.getElementById('summary-cards').innerHTML=cards;
+  document.getElementById('s'+current).style.display='none';
+  document.getElementById('nav-btns').style.display='none';
+  document.querySelector('.prog-wrap').style.display='none';
   document.getElementById('results').classList.add('show');
+  window.scrollTo({top:0,behavior:'smooth'});
 }
 
-function shareApp() {
-  if (navigator.share) {
-    navigator.share({
-      title: 'TakTab — قسّط وجبتك بدون فوائد',
-      text: 'شاركت في استبيان TakTab — منصة تقسيط الطعام السعودية الأولى. شارك أنت أيضاً!',
-      url: window.location.href,
-    });
+function multiSel9(el){
+  el.classList.toggle('selected');
+  answers['q9']=[...document.querySelectorAll('#s9 .multi-opt.selected')]
+    .map(o=>o.querySelector('.opt-txt').textContent.trim()).join(' / ');
+}
+
+function shareApp(){
+  const url='https://tak100saudi.github.io/graduation';
+  if(navigator.share){
+    navigator.share({title:'TakTab — استبيان',text:'شاركت في استبيان TakTab — قسّط وجبتك بدون فوائد. شاركنا رأيك!',url});
   } else {
-    navigator.clipboard.writeText(window.location.href);
-    alert('تم نسخ الرابط — شاركه مع أصدقائك!');
+    navigator.clipboard.writeText(url).then(()=>alert('تم نسخ الرابط ✓ شاركه مع أصدقائك!'));
   }
 }
 </script>
